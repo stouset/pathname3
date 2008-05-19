@@ -1,9 +1,13 @@
+require 'fileutils'
 require 'find'
 
 class Pathname < String
   VERSION     = '1.0.0'
-  ROOT        = Pathname.new('/')
   SYMLOOP_MAX = 8
+  
+  ROOT    = Pathname.new('/').freeze
+  DOT     = Pathname.new('.').freeze
+  DOT_DOT = Pathname.new('..').freeze
   
   def +(path)
     dup << path
@@ -23,7 +27,7 @@ class Pathname < String
     else
       parts = to_a
       parts.length.downto(1) do |i|
-        yield File.join(parts[0, i]).to_path
+        yield self.class.join(parts[0, i])
       end
     end
   end
@@ -38,15 +42,15 @@ class Pathname < String
     
     parts.each do |part|
       case part
-        when '.'  then next
-        when '..' then 
-          final.push('..') if     final.empty?
-          final.pop        unless %w{ / .. }.include?(final.last)
+        when DOT     then next
+        when DOT_DOT then 
+          final.push(DOT_DOT) if     final.empty?
+          final.pop           unless [ROOT, DOT_DOT].include?(final.last)
         else final.push(part)
       end
     end
     
-    replace(final.empty? ? '.' : File.join(*final))
+    replace(final.empty? ? DOT : self.class.join(*final))
   end
   
   def cleanpath
@@ -59,9 +63,17 @@ class Pathname < String
     else
       parts = to_a
       1.upto(parts.length) do |i|
-        yield File.join(parts[0, i]).to_path
+        yield self.class.join(parts[0, i])
       end
     end
+  end
+  
+  def dot?
+    self == DOT
+  end
+  
+  def dot_dot?
+    self == DOT_DOT
   end
   
   def mountpoint?
@@ -90,11 +102,37 @@ class Pathname < String
   end
   
   def relative_path_from(base)
+    base = base.to_path
     
+    # both must be relative, or both must be absolute
+    if self.absolute? != base.absolute?
+      raise ArgumentError, 'no relative path between a relative and absolute'
+    end
+    
+    return self if base.dot?
+    return DOT  if self == base
+    
+    dest = self.cleanpath.to_a
+    base = base.cleanpath.to_a
+    
+    while !dest.empty? && !base.empty? && dest[0] == base[0]
+      base.shift
+      dest.shift
+    end
+    
+    if base.include?(DOT_DOT)
+      raise ArgumentError, "base directory may not contain '#{DOT_DOT}'"
+    end
+    
+    path = base.fill(DOT_DOT) + dest
+    path = self.class.join(*path)
+    path = DOT.dup if path.empty?
+    
+    path
   end
   
   def root?
-    self =~ %r{^/+$}
+    self =~ %r{^#{ROOT}+$}
   end
   
   def to_a
@@ -102,6 +140,10 @@ class Pathname < String
     array.delete('')
     array.insert(0, ROOT) if absolute?
     array
+  end
+  
+  def to_path
+    self
   end
   
   def unlink
@@ -117,6 +159,7 @@ class Pathname
   def entries;            Dir.entries(self).map! {|e| e.to_path }; end
   def mkdir(mode = 0777); Dir.mkdir(self, mode);                   end
   def open(&blk);         Dir.open(self, &blk);                    end
+  def rmdir;              Dir.rmdir(self);                         end
   
   def self.glob(pattern, flags = 0)
     dirs = Dir.glob(pattern, flags)
@@ -149,17 +192,32 @@ class Pathname
   def pipe?;            FileTest.pipe?(self);            end
   def readable?;        FileTest.readable?(self);        end
   def readable_real?;   FileTest.readable_real?(self);   end
+  def setgid?;          FileTest.setgit?(self);          end
+  def setuid?;          FileTest.setuid?(self);          end
+  def size;             FileTest.size(self);             end
+  def size?;            FileTest.size?(self);            end
+  def socket?;          FileTest.socket?(self);          end
+  def sticky?;          FileTest.sticky?(self);          end
+  def symlink?;         FileTest.symlink?(self);         end
+  def world_readable?;  FileTest.world_readable?(self);  end
+  def world_writable?;  FileTest.world_writable?(self);  end
+  def writable?;        FileTest.writable?(self);        end
+  def writable_real?;   FileTest.writable_real?(self);   end
+  def zero?;            FileTest.zero?(self);            end
 end
 
 class Pathname
-  def atime; File.atime(self); end
-  def ctime; File.ctime(self); end
-  def ftype; File.ftype(self); end
-  def lstat; File.lstat(self); end
-  def mtime; File.mtime(self); end
+  def atime;               File.atime(self);               end
+  def ctime;               File.ctime(self);               end
+  def ftype;               File.ftype(self);               end
+  def lstat;               File.lstat(self);               end
+  def mtime;               File.mtime(self);               end
+  def stat;                File.stat(self);                end
+  def utime(atime, mtime); File.utime(self, atime, mtime); end
 end
 
 class Pathname
+  def self.join(*parts);         File.join(*parts).to_path;            end
   def basename;                  File.basename(self).to_path;          end
   def chmod(mode);               File.chmod(mode, self);               end
   def chown(owner, group);       File.chown(owner, group, self);       end
@@ -173,13 +231,23 @@ class Pathname
   def link(to);                  File.link(self, to);                  end
   def mkpath;                    File.makedirs(self);                  end
   def readlink;                  File.readlink(self).to_path;          end
+  def rename(to);                File.rename(self, to); replace(to);   end
+  def split;                     File.split(self);                     end
+  def symlink(to);               File.symlink(self, to);               end
+  def truncate;                  File.truncate(self);                  end
 end
 
 class Pathname
-  def each_line(sep = $/, &blk); IO.foreach(self, sep, &blk); end
-  def open(mode, &blk);          IO.open(self, mode, &blk);   end
-  def read(len = nil, off = 0);  IO.read(self, len, off);     end
-  def readlines(sep = $/);       IO.readlines(self, sep);     end
+  def rmtree; FileUtils.rmtree(self); end
+  def touch;  FileUtils.touch(self);  end
+end
+
+class Pathname
+  def each_line(sep = $/, &blk);       IO.foreach(self, sep, &blk);  end
+  def open(mode = 'r', &blk);          IO.open(self, mode, &blk);    end
+  def read(len = nil, off = 0);        IO.read(self, len, off);      end
+  def readlines(sep = $/);             IO.readlines(self, sep);      end
+  def sysopen(mode = 'r', perm = nil); IO.sysopen(self, mode, perm); end
 end
 
 class Pathname
