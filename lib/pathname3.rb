@@ -22,13 +22,9 @@ class Pathname < String
   end
   
   def ascend
-    if root?
-      yield ROOT
-    else
-      parts = to_a
-      parts.length.downto(1) do |i|
-        yield self.class.join(parts[0, i])
-      end
+    parts = to_a
+    parts.length.downto(1) do |i|
+      yield self.class.join(parts[0, i])
     end
   end
   
@@ -58,13 +54,9 @@ class Pathname < String
   end
   
   def descend
-    if root?
-      yield ROOT
-    else
-      parts = to_a
-      1.upto(parts.length) do |i|
-        yield self.class.join(parts[0, i])
-      end
+    parts = to_a
+    1.upto(parts.length) do |i|
+      yield self.class.join(parts[0, i])
     end
   end
   
