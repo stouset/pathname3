@@ -196,7 +196,7 @@ class Pathname < String
   end
   
   def root?
-    self =~ %r{^#{ROOT}+$}
+    !!(self =~ %r{^#{ROOT}+$})
   end
   
   def to_a
