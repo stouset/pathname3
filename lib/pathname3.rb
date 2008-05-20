@@ -128,7 +128,7 @@ class Pathname < String
   end
   
   def to_a
-    array = split(File::SEPARATOR)
+    array = to_s.split(File::SEPARATOR)
     array.delete('')
     array.insert(0, ROOT) if absolute?
     array
