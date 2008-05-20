@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   
   s.files  = %w{ CHANGELOG README LICENSE }
   s.files += %w{ pathname3.gemspec }
-  s.files += Dir['lib/**/*']
+  s.files += Dir['{lib,test}/**/*']
   
   s.has_rdoc     = true
 end
