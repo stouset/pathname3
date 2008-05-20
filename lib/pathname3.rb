@@ -170,16 +170,19 @@ class Pathname < String
       raise ArgumentError, 'no relative path between a relative and absolute'
     end
     
-    return self if base.dot?
-    return DOT  if self == base
+    return self    if base.dot?
+    return DOT     if self == base
     
-    dest = self.cleanpath.to_a
     base = base.cleanpath.to_a
+    dest = self.cleanpath.to_a
     
     while !dest.empty? && !base.empty? && dest[0] == base[0]
       base.shift
       dest.shift
     end
+    
+    base.shift if base[0] == DOT
+    dest.shift if dest[0] == DOT
     
     if base.include?(DOT_DOT)
       raise ArgumentError, "base directory may not contain '#{DOT_DOT}'"
