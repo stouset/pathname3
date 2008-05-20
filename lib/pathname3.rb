@@ -333,3 +333,9 @@ class String
     Pathname.new(self)
   end
 end
+
+module Kernel
+  def Pathname(path)
+    Pathname.new(path)
+  end
+end
