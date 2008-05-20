@@ -20,8 +20,8 @@ class Pathname < String
   # Creates a new Pathname. Any path with a null is rejected.
   #
   def initialize(path)
-    if path.include? "\0"
-      raise ArgumentError, "path cannot contain ASCII NUL"
+    if path =~ %r{\0}
+      raise ArgumentError, "path cannot contain ASCII NULLs"
     end
     
     super(path)
