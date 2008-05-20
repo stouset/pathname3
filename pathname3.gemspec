@@ -23,7 +23,9 @@ Gem::Specification.new do |s|
     toward this end would be appreciated.
   DESC
   
-  s.files = Dir.glob('lib/**/*')
-  s.require_path = 'lib'
+  s.files  = %w{ README CHANGELOG }
+  s.files += %w{ pathname3.gemspec }
+  s.files += Dir['lib/**/*']
+  
   s.has_rdoc     = true
 end
