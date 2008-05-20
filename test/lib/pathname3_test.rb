@@ -9,12 +9,6 @@ require 'enumerator'
 
 class TestPathname < Test::Unit::TestCase
 
-  if RUBY_VERSION < "1.9"
-    FUNCALL = :__send__
-  else
-    FUNCALL = :funcall
-  end
-
   def self.define_assertion(name, &block)
     @defassert_num ||= {}
     @defassert_num[name] ||= 0
@@ -77,14 +71,6 @@ class TestPathname < Test::Unit::TestCase
     defassert(:cleanpath_aggressive, '/',       '///..')
     defassert(:cleanpath_aggressive, '/',       '///.')
     defassert(:cleanpath_aggressive, '/',       '///a/../..')
-  end
-
-  def add_trailing_separator(path)
-    Pathname.allocate.send(FUNCALL, :add_trailing_separator, path)
-  end
-
-  def del_trailing_separator(path)
-    Pathname.allocate.send(FUNCALL, :del_trailing_separator, path)
   end
 
   def plus(path1, path2) # -> path
