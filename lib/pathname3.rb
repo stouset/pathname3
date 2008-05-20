@@ -146,7 +146,13 @@ class Pathname < String
   
   def realpath
     path = self
-    SYMLOOP_MAX.times { path = path.readlink }
+    
+    SYMLOOP_MAX.times do
+      link = path.readlink
+      link = path.dirname + link if link.relative?
+      path = link
+    end
+    
     raise Errno::ELOOP, self
   rescue Errno::EINVAL
     path.expand_path
