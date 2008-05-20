@@ -1,26 +1,59 @@
 require 'fileutils'
 require 'find'
 
+#
+# Pathname represents a path to a file on a filesystem. It can be relative or
+# absolute. It exists to provide a more instance-oriented approach to managing
+# paths than the class-level methods on File, FileTest, Dir, and Find.
+#
 class Pathname < String
-  VERSION     = '1.0.0'
-  SYMLOOP_MAX = 8
+  VERSION     = '1.0.0' # version of the library
+  SYMLOOP_MAX = 8       # deepest symlink traversal
   
   ROOT    = Pathname.new('/').freeze
   DOT     = Pathname.new('.').freeze
   DOT_DOT = Pathname.new('..').freeze
   
+  #
+  # Appends a component of a path to self. Returns a Pathname to the combined
+  # path.
+  #
   def +(path)
     dup << path
   end
   
+  #
+  # Appends (destructively) a component of a path to self. Replaces the
+  # contents of the current Pathname with the new, combined path.
+  #
   def <<(path)    
     replace( join(path) )
   end
   
+  #
+  # Returns true if this is an absolute path.
+  #
   def absolute?
     self[0, 1] == ROOT
   end
   
+  #
+  # Yields to each component of the path, going up to the root.
+  #
+  #    Pathname.new('/path/to/some/file').ascend {|path| p path }
+  #      "/path/to/some/file"
+  #      "/path/to/some"
+  #      "/path/to"
+  #      "/path"
+  #      "/"
+  #
+  #    Pathname.new('a/relative/path').ascend {|path| p path }
+  #      "a/relative/path"
+  #      "a/relative"
+  #      "a"
+  #
+  #  Does not actually access the filesystem.
+  #
   def ascend
     parts = to_a
     parts.length.downto(1) do |i|
