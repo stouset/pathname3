@@ -72,9 +72,13 @@ class Pathname < String
     parts.each do |part|
       case part
         when DOT     then next
-        when DOT_DOT then 
-          final.push(DOT_DOT) if     final.empty?
-          final.pop           unless [ROOT, DOT_DOT].include?(final.last)
+        when DOT_DOT then
+          case final.last
+            when ROOT    then next
+            when DOT_DOT then final.push(DOT_DOT)
+            when nil     then final.push(DOT_DOT)
+            else              final.pop
+          end
         else final.push(part)
       end
     end
