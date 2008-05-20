@@ -16,7 +16,7 @@ class Pathname < String
   
   #
   # Appends a component of a path to self. Returns a Pathname to the combined
-  # path.
+  # path. Cleans any redundant components of the path.
   #
   def +(path)
     dup << path
@@ -24,10 +24,11 @@ class Pathname < String
   
   #
   # Appends (destructively) a component of a path to self. Replaces the
-  # contents of the current Pathname with the new, combined path.
+  # contents of the current Pathname with the new, combined path. Cleans any
+  # redundant components of the path.
   #
   def <<(path)    
-    replace( join(path) )
+    replace( join(path).cleanpath! )
   end
   
   #
