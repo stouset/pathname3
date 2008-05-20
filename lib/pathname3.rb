@@ -14,6 +14,27 @@ class Pathname < String
   DOT     = Pathname.new('.').freeze
   DOT_DOT = Pathname.new('..').freeze
   
+  include Comparable
+  
+  #
+  # Creates a new Pathname. Any path with a null is rejected.
+  #
+  def initialize(path)
+    if path =~ %r{\0}
+      raise ArgumentError, "path cannot contain ASCII NULLs"
+    end
+    
+    super(path)
+  end
+  
+  #
+  # Compares pathnames, case-sensitively. Sorts directories higher than other
+  # files named similarly.
+  #
+  def <=>(other)
+    to_s.tr('/', "\0") <=> other.to_s.tr('/', "\0")
+  end
+  
   #
   # Appends a component of a path to self. Returns a Pathname to the combined
   # path. Cleans any redundant components of the path.
