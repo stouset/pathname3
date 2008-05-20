@@ -35,3 +35,9 @@ The pathname3 project is hosted on GitHub.
 To clone the repository, simply run:
 
   git clone git://github.com/stouset/pathname3.git
+
+== License
+
+pathname3 is available under the MIT license.
+
+:include: LICENSE
