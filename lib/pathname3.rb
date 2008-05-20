@@ -127,6 +127,10 @@ class Pathname < String
     self == DOT_DOT
   end
   
+  def each_filename(&blk)
+    to_a.each(&blk)
+  end
+  
   def mountpoint?
     stat1 = self.lstat
     stat2 = self.parent.lstat
