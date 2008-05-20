@@ -1,0 +1,37 @@
+= pathname3
+
+This library is a replacement for the venerable pathname and pathname2
+libraries.
+
+The original implementation of pathname is extremely slow, and
+instantiates extreme numbers of objects for relatively simple operations.
+Twenty or so Pathname instantiations on some method calls is relatively
+common.
+
+An implementation by Daniel J. Berger, pathname2, improved on the original
+significantly, adding Windows support, a Facade implementation, and a String-
+based implementation. While his version is faster, it's still very slow at
+instantiation. And it's Facade implementation misses some odd case methods
+like Pathname#join.
+
+This version will focus on being fast and lightweight, while still being pure
+Ruby. Windows support will be forthcoming once I have access to a Windows
+development machine. Until then, patches adding Windows compatibility are
+welcome.
+
+== Installation
+
+You can install pathname3 through Rubygems. The gem is hosted on GitHub, and
+can be installed via
+
+  $ sudo gem install --source http://gems.github.com/ stouset-pathname3
+
+== Contribution
+
+The pathname3 project is hosted on GitHub.
+
+  http://github.com/stouset/pathname3/
+
+To clone the repository, simply run:
+
+  git clone git://github.com/stouset/pathname3.git

@@ -1,0 +1,7 @@
+= pathname3 Changelog
+
+== Version 1.0.0
+
+* First release
+* Mostly-compatible support with pathname
+* String-based pathname implementation
