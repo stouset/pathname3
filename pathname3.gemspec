@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
     toward this end would be appreciated.
   DESC
   
-  s.files  = %w{ CHANGELOG README LICENSE }
+  s.files  = %w{ CHANGES README LICENSE }
   s.files += %w{ pathname3.gemspec }
   s.files += Dir['{lib,test}/**/*']
   
