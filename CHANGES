@@ -2,6 +2,7 @@
 
 == Version 1.2.0
 
+* == compares paths semantically
 * Better compatibility with Pathname
 * Full documentation
 
