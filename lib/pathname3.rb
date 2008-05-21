@@ -32,7 +32,7 @@ class Pathname < String
   def <=>(other)
     self.tr('/', "\0").to_s <=> other.to_str.tr('/', "\0")
   rescue NoMethodError # doesn't respond to to_str
-    false
+    nil
   end
   
   #
