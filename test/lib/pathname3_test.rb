@@ -260,9 +260,9 @@ class TestPathname < Test::Unit::TestCase
       "#{p1.inspect} <=> #{p2.inspect}: <#{e}> expected but was <#{r}>")
   end
   def test_comparison
-    assert_pathname_cmp( 0, "a", "a")
-    assert_pathname_cmp( 1, "b", "a")
-    assert_pathname_cmp(-1, "a", "b")
+    assert_pathname_cmp( 0, "a",  "a")
+    assert_pathname_cmp( 1, "b",  "a")
+    assert_pathname_cmp(-1, "a",  "b")
     ss = %w(
       a
       a/

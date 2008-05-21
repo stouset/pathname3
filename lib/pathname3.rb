@@ -30,7 +30,22 @@ class Pathname < String
   # files named similarly.
   #
   def <=>(other)
-    to_s.tr('/', "\0") <=> other.to_s.tr('/', "\0")
+    self.tr('/', "\0").to_s <=> other.to_str.tr('/', "\0")
+  rescue NoMethodError # doesn't respond to to_str
+    false
+  end
+  
+  #
+  # Compares two pathnames for equality. Considers pathnames equal if they
+  # both point to the same location, and are both absolute or both relative.
+  #
+  def ==(other)
+    left  =                 self.cleanpath.tr('/', "\0").to_s
+    right = other.to_str.to_path.cleanpath.tr('/', "\0").to_s
+    
+    left == right
+  rescue NoMethodError # doesn't implement to_str
+    false
   end
   
   #
@@ -54,7 +69,7 @@ class Pathname < String
   # Returns true if this is an absolute path.
   #
   def absolute?
-    self[0, 1] == ROOT
+    self[0, 1].to_s == ROOT
   end
   
   #
