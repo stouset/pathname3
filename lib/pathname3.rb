@@ -75,17 +75,17 @@ class Pathname < String
   #
   # Yields to each component of the path, going up to the root.
   #
-  #    Pathname.new('/path/to/some/file').ascend {|path| p path }
-  #      "/path/to/some/file"
-  #      "/path/to/some"
-  #      "/path/to"
-  #      "/path"
-  #      "/"
+  #   Pathname.new('/path/to/some/file').ascend {|path| p path }
+  #     "/path/to/some/file"
+  #     "/path/to/some"
+  #     "/path/to"
+  #     "/path"
+  #     "/"
   #
-  #    Pathname.new('a/relative/path').ascend {|path| p path }
-  #      "a/relative/path"
-  #      "a/relative"
-  #      "a"
+  #   Pathname.new('a/relative/path').ascend {|path| p path }
+  #     "a/relative/path"
+  #     "a/relative"
+  #     "a"
   #
   #  Does not actually access the filesystem.
   #
@@ -96,10 +96,18 @@ class Pathname < String
     end
   end
   
+  #
+  # Returns all children of this path. "." and ".." are not included, since
+  # they aren't under the current path.
+  #
   def children
     entries[2..-1]
   end
   
+  #
+  # Cleans the path by removing consecutive slashes, and useless dots.
+  # Replaces the contents of the current Pathname.
+  #
   def cleanpath!
     parts = to_a
     final = []
@@ -121,10 +129,31 @@ class Pathname < String
     replace(final.empty? ? DOT : self.class.join(*final))
   end
   
+  #
+  # Cleans the path by removing consecutive slashes, and useless dots.
+  #
   def cleanpath
     dup.cleanpath!
   end
   
+  #
+  # Yields to each component of the path, going down from the root.
+  #
+  #   Pathname.new('/path/to/some/file').ascend {|path| p path }
+  #     "/"
+  #     "/path"
+  #     "/path/to"
+  #     "/path/to/some"
+  #     "/path/to/some/file"
+
+  #
+  #   Pathname.new('a/relative/path').ascend {|path| p path }
+  #     "a"
+  #     "a/relative"
+  #     "a/relative/path"
+  #
+  #  Does not actually access the filesystem.
+  #
   def descend
     parts = to_a
     1.upto(parts.length) do |i|
@@ -132,18 +161,42 @@ class Pathname < String
     end
   end
   
+  #
+  # Returns true if this path is simply a '.'.
+  #
   def dot?
     self == DOT
   end
   
+  #
+  # Returns true if this path is simply a '..'.
+  #
   def dot_dot?
     self == DOT_DOT
   end
   
+  #
+  # Iterates over every component of the path.
+  #
+  #   Pathname.new('/path/to/some/file').ascend {|path| p path }
+  #     "/"
+  #     "path"
+  #     "to"
+  #     "some"
+  #     "file"
+  #
+  #   Pathname.new('a/relative/path').each_filename {|part| p part }
+  #     "a"
+  #     "relative"
+  #     "path"
+  #
   def each_filename(&blk)
     to_a.each(&blk)
   end
   
+  #
+  # Returns true if the path is a mountpoint.
+  #
   def mountpoint?
     stat1 = self.lstat
     stat2 = self.parent.lstat
@@ -153,10 +206,17 @@ class Pathname < String
     false
   end
   
+  #
+  # Returns a path to the parent directory. Simply appends a "..".
+  #
   def parent
     self + '..'
   end
   
+  #
+  # Resolves a path to locate a real location on the filesystem. Resolves
+  # symlinks up to a deptho of SYMLOOP_MAX.
+  #
   def realpath
     path = self
     
@@ -171,10 +231,20 @@ class Pathname < String
     path.expand_path
   end
   
+  #
+  # Returns true if this is a relative path.
+  #
   def relative?
     !absolute?
   end
   
+  #
+  # Returns this path as a relative location from +base+. The path and +base+
+  # must both be relative or both be absolute. An ArgumentError is raised if
+  # a relative path can't be generated between the two locations.
+  #
+  # Does not access the filesystem.
+  #
   def relative_path_from(base)
     base = base.to_path
     
@@ -208,10 +278,16 @@ class Pathname < String
     path
   end
   
+  #
+  # Returns true if this path points to the root of the filesystem.
+  #
   def root?
     !!(self =~ %r{^#{ROOT}+$})
   end
   
+  #
+  # Splits the path into an array of its components.
+  #
   def to_a
     array = to_s.split(File::SEPARATOR)
     array.delete('')
@@ -219,10 +295,16 @@ class Pathname < String
     array
   end
   
+  #
+  # Returns self.
+  #
   def to_path
     self
   end
   
+  #
+  # Unlinks the file or directory at the path.
+  #
   def unlink
     Dir.unlink(self)
   rescue Errno::ENOTDIR
@@ -231,13 +313,25 @@ class Pathname < String
 end
 
 class Pathname
-  def self.[](pattern);   Dir[pattern].map! {|d| d.to_path };      end
-  def self.pwd;           Dir.pwd.to_path;                         end
-  def entries;            Dir.entries(self).map! {|e| e.to_path }; end
-  def mkdir(mode = 0777); Dir.mkdir(self, mode);                   end
-  def open(&blk);         Dir.open(self, &blk);                    end
-  def rmdir;              Dir.rmdir(self);                         end
+  # See Dir::[]
+  def self.[](pattern); Dir[pattern].map! {|d| d.to_path }; end
   
+  # See Dir::pwd
+  def self.pwd; Dir.pwd.to_path; end
+  
+  # See Dir#entries
+  def entries; Dir.entries(self).map! {|e| e.to_path }; end
+  
+  # See Dir#mkdir
+  def mkdir(mode = 0777); Dir.mkdir(self, mode); end
+  
+  # See Dir#open
+  def open(&blk); Dir.open(self, &blk); end
+  
+  # See Dir#rmdir
+  def rmdir; Dir.rmdir(self); end
+  
+  # See Dir#glob
   def self.glob(pattern, flags = 0)
     dirs = Dir.glob(pattern, flags)
     dirs.map! {|path| path.to_path }
@@ -250,6 +344,7 @@ class Pathname
     end
   end
   
+  # See Dir#chdir
   def chdir 
     blk = lambda { yield self } if block_given?
     Dir.chdir(self, &blk)
@@ -257,97 +352,220 @@ class Pathname
 end
 
 class Pathname
-  def blockdev?;        FileTest.blockdev?(self);        end
-  def chardev?;         FileTest.chardev?(self);         end
-  def directory?;       FileTest.directory?(self);       end
-  def executable?;      FileTest.executable?(self);      end
+  # See FileTest#blockdev?
+  def blockdev?; FileTest.blockdev?(self); end
+  
+  # See FileTest#chardev?
+  def chardev?; FileTest.chardev?(self); end
+  
+  # See FileTest#directory?
+  def directory?; FileTest.directory?(self); end
+  
+  # See FileTest#executable?
+  def executable?; FileTest.executable?(self); end
+  
+  # See FileTest#executable_real?
   def executable_real?; FileTest.executable_real?(self); end
-  def exists?;          FileTest.exists?(self);          end
-  def file?;            FileTest.file?(self);            end
-  def grpowned?;        FileTest.grpowned?(self);        end
-  def owned?;           FileTest.owned?(self);           end
-  def pipe?;            FileTest.pipe?(self);            end
-  def readable?;        FileTest.readable?(self);        end
-  def readable_real?;   FileTest.readable_real?(self);   end
-  def setgid?;          FileTest.setgit?(self);          end
-  def setuid?;          FileTest.setuid?(self);          end
-  def size;             FileTest.size(self);             end
-  def size?;            FileTest.size?(self);            end
-  def socket?;          FileTest.socket?(self);          end
-  def sticky?;          FileTest.sticky?(self);          end
-  def symlink?;         FileTest.symlink?(self);         end
-  def world_readable?;  FileTest.world_readable?(self);  end
-  def world_writable?;  FileTest.world_writable?(self);  end
-  def writable?;        FileTest.writable?(self);        end
-  def writable_real?;   FileTest.writable_real?(self);   end
-  def zero?;            FileTest.zero?(self);            end
+  
+  # See FileTest#exists?
+  def exists?; FileTest.exists?(self); end
+  
+  # See FileTest#file?
+  def file?; FileTest.file?(self); end
+  
+  # See FileTest#grpowned?
+  def grpowned?; FileTest.grpowned?(self); end
+  
+  # See FileTest#owned?
+  def owned?; FileTest.owned?(self); end
+  
+  # See FileTest#pipe?
+  def pipe?; FileTest.pipe?(self); end
+  
+  # See FileTest#readable?
+  def readable?; FileTest.readable?(self); end
+  
+  # See FileTest#readable_real?
+  def readable_real?; FileTest.readable_real?(self); end
+  
+  # See FileTest#setgid?
+  def setgid?; FileTest.setgit?(self); end
+  
+  # See FileTest#setuid?
+  def setuid?; FileTest.setuid?(self); end
+  
+  # See FileTest#socket?
+  def socket?; FileTest.socket?(self); end
+  
+  # See FileTest#sticky?
+  def sticky?; FileTest.sticky?(self); end
+  
+  # See FileTest#symlink?
+  def symlink?; FileTest.symlink?(self); end
+  
+  # See FileTest#world_readable?
+  def world_readable?; FileTest.world_readable?(self); end
+  
+  # See FileTest#world_writable?
+  def world_writable?; FileTest.world_writable?(self); end
+  
+  # See FileTest#writable?
+  def writable?; FileTest.writable?(self); end
+  
+  # See FileTest#writable_real?
+  def writable_real?; FileTest.writable_real?(self); end
+  
+  # See FileTest#zero?
+  def zero?; FileTest.zero?(self); end
 end
 
 class Pathname
-  def atime;               File.atime(self);               end
-  def ctime;               File.ctime(self);               end
-  def ftype;               File.ftype(self);               end
-  def lstat;               File.lstat(self);               end
-  def mtime;               File.mtime(self);               end
-  def stat;                File.stat(self);                end
+  # See File#atime
+  def atime; File.atime(self); end
+  
+  # See File#ctime
+  def ctime; File.ctime(self); end
+  
+  # See File#ftype
+  def ftype; File.ftype(self); end
+  
+  # See File#lstat
+  def lstat; File.lstat(self); end
+  
+  # See File#mtime
+  def mtime; File.mtime(self); end
+  
+  # See File#stat
+  def stat; File.stat(self); end
+  
+  # See File#utime
   def utime(atime, mtime); File.utime(self, atime, mtime); end
 end
 
 class Pathname
-  def self.join(*parts);         File.join(*parts).to_path;            end
-  def basename;                  File.basename(self).to_path;          end
-  def chmod(mode);               File.chmod(mode, self);               end
-  def chown(owner, group);       File.chown(owner, group, self);       end
-  def dirname;                   File.dirname(self).to_path;           end
-  def expand_path(from = nil);   File.expand_path(self, from).to_path; end
-  def extname;                   File.extname(self);                   end
-  def fnmatch?(pat, flags = 0);  File.fnmatch(pat, self, flags);       end
-  def join(*parts);              File.join(self, *parts).to_path;      end
-  def lchmod(mode);              File.lchmod(mode, self);              end
-  def lchown(owner, group);      File.lchown(owner, group, self);      end
-  def link(to);                  File.link(self, to);                  end
-  def mkpath;                    File.makedirs(self);                  end
-  def readlink;                  File.readlink(self).to_path;          end
-  def rename(to);                File.rename(self, to); replace(to);   end
-  def split;                     File.split(self);                     end
-  def symlink(to);               File.symlink(self, to);               end
-  def truncate;                  File.truncate(self);                  end
+  # See File::join
+  def self.join(*parts); File.join(*parts).to_path; end
+  
+  # See File#basename
+  def basename; File.basename(self).to_path; end
+  
+  # See File#chmod
+  def chmod(mode); File.chmod(mode, self); end
+  
+  # See File#chown
+  def chown(owner, group); File.chown(owner, group, self); end
+  
+  # See File#dirname
+  def dirname; File.dirname(self).to_path; end
+  
+  # See File#expand_path
+  def expand_path(from = nil); File.expand_path(self, from).to_path; end
+  
+  # See File#extname
+  def extname; File.extname(self); end
+  
+  # See File#fnmatch
+  def fnmatch?(pat, flags = 0); File.fnmatch(pat, self, flags); end
+  
+  # See File#join
+  def join(*parts); File.join(self, *parts).to_path; end
+  
+  # See File#lchmod
+  def lchmod(mode); File.lchmod(mode, self); end
+  
+  # See File#lchown
+  def lchown(owner, group); File.lchown(owner, group, self); end
+  
+  # See File#link
+  def link(to); File.link(self, to); end
+  
+  # See File#mkpath
+  def mkpath; File.makedirs(self); end
+  
+  # See File#readlink
+  def readlink; File.readlink(self).to_path; end
+  
+  # See File#rename
+  def rename(to); File.rename(self, to); replace(to); end
+  
+  # See File#size
+  def size; File.size(self); end
+  
+  # See File#size?
+  def size?; File.size?(self); end
+  
+  # See File#split
+  def split; File.split(self); end
+  
+  # See File#symlink
+  def symlink(to); File.symlink(self, to); end
+  
+  # See File#truncate
+  def truncate; File.truncate(self); end
 end
 
 class Pathname
+  
+  # See FileUtils#rmtree
   def rmtree; FileUtils.rmtree(self); end
-  def touch;  FileUtils.touch(self);  end
+  
+  # See FileUtils#touch
+  def touch; FileUtils.touch(self); end
 end
 
 class Pathname
-  def each_line(sep = $/, &blk);       IO.foreach(self, sep, &blk);  end
-  def open(mode = 'r', &blk);          IO.open(self, mode, &blk);    end
-  def read(len = nil, off = 0);        IO.read(self, len, off);      end
-  def readlines(sep = $/);             IO.readlines(self, sep);      end
+  # See IO#each_line
+  def each_line(sep = $/, &blk); IO.foreach(self, sep, &blk); end
+  
+  # See IO#open
+  def open(mode = 'r', &blk); IO.open(self, mode, &blk); end
+  
+  # See IO#read
+  def read(len = nil, off = 0); IO.read(self, len, off); end
+  
+  # See IO#readlines
+  def readlines(sep = $/); IO.readlines(self, sep); end
+  
+  # See IO#sysopen
   def sysopen(mode = 'r', perm = nil); IO.sysopen(self, mode, perm); end
 end
 
 class Pathname
+  # See Find#find
   def find; Find.find(self) {|path| yield path.to_path }; end
 end
 
 class Pathname
   class << self
+    # Alias for Pathname#pwd
     alias getwd pwd
   end
   
+  # Alias for Pathname#unlink
   alias delete   unlink
+  
+  # Alias for Pathname#exists?
   alias exist?   exists?
+  
+  # Alias for Pathname#fnmatch?
   alias fnmatch  fnmatch?
 end
 
 class String
+  #
+  # Converts the string directly to a pathname.
+  #
   def to_path
     Pathname.new(self)
   end
 end
 
 module Kernel
+  #
+  # Allows construction of a Pathname by using the class name as a method.
+  #
+  # This really ought to be deprecated due to String#to_path.
+  #
   def Pathname(path)
     Pathname.new(path)
   end
