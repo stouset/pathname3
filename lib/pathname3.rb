@@ -10,11 +10,9 @@ class Pathname < String
   VERSION     = '1.1.0' # version of the library
   SYMLOOP_MAX = 8       # deepest symlink traversal
   
-  ROOT    = Pathname.new('/').freeze
-  DOT     = Pathname.new('.').freeze
-  DOT_DOT = Pathname.new('..').freeze
-  
-  include Comparable
+  ROOT    = '/'.freeze
+  DOT     = '.'.freeze
+  DOT_DOT = '..'.freeze
   
   #
   # Creates a new Pathname. Any path with a null is rejected.
@@ -48,7 +46,7 @@ class Pathname < String
   # contents of the current Pathname with the new, combined path. Cleans any
   # redundant components of the path.
   #
-  def <<(path)    
+  def <<(path)
     replace( join(path).cleanpath! )
   end
   
@@ -170,8 +168,8 @@ class Pathname < String
       raise ArgumentError, 'no relative path between a relative and absolute'
     end
     
-    return self    if base.dot?
-    return DOT     if self == base
+    return self        if base.dot?
+    return DOT.to_path if self == base
     
     base = base.cleanpath.to_a
     dest = self.cleanpath.to_a
@@ -190,7 +188,7 @@ class Pathname < String
     
     path = base.fill(DOT_DOT) + dest
     path = self.class.join(*path)
-    path = DOT.dup if path.empty?
+    path = DOT.to_path if path.empty?
     
     path
   end
