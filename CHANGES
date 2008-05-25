@@ -1,5 +1,10 @@
 = pathname3 Changelog
 
+== Version 1.2.1
+
+* Fix a bug where Pathname#open was accidentally redefined due to misnamed
+  method
+
 == Version 1.2.0
 
 * == compares paths semantically
