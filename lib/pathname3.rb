@@ -326,7 +326,7 @@ class Pathname
   def mkdir(mode = 0777); Dir.mkdir(self, mode); end
   
   # See Dir#open
-  def open(&blk); Dir.open(self, &blk); end
+  def opendir(&blk); Dir.open(self, &blk); end
   
   # See Dir#rmdir
   def rmdir; Dir.rmdir(self); end
