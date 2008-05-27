@@ -495,7 +495,7 @@ class Pathname
   def size?; File.size?(self); end
   
   # See File#split
-  def split; File.split(self); end
+  def split; File.split(self).map {|part| part.to_path }; end
   
   # See File#symlink
   def symlink(to); File.symlink(self, to); end
