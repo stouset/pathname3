@@ -468,7 +468,7 @@ class Pathname
   def fnmatch?(pat, flags = 0); File.fnmatch(pat, self, flags); end
   
   # See File#join
-  def join(*parts); File.join(self, *parts).to_path; end
+  def join(*parts); self.class.join(self, *parts); end
   
   # See File#lchmod
   def lchmod(mode); File.lchmod(mode, self); end
