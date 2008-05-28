@@ -444,7 +444,7 @@ end
 
 class Pathname
   # See File::join
-  def self.join(*parts); File.join(*parts).to_path; end
+  def self.join(*parts); File.join(*parts.reject {|p| p.empty? }).to_path; end
   
   # See File#basename
   def basename; File.basename(self).to_path; end
