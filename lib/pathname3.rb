@@ -319,19 +319,19 @@ class Pathname
   # See Dir::pwd
   def self.pwd; Dir.pwd.to_path; end
   
-  # See Dir#entries
+  # See Dir::entries
   def entries; Dir.entries(self).map! {|e| e.to_path }; end
   
-  # See Dir#mkdir
+  # See Dir::mkdir
   def mkdir(mode = 0777); Dir.mkdir(self, mode); end
   
-  # See Dir#open
+  # See Dir::open
   def opendir(&blk); Dir.open(self, &blk); end
   
-  # See Dir#rmdir
+  # See Dir::rmdir
   def rmdir; Dir.rmdir(self); end
   
-  # See Dir#glob
+  # See Dir::glob
   def self.glob(pattern, flags = 0)
     dirs = Dir.glob(pattern, flags)
     dirs.map! {|path| path.to_path }
@@ -344,7 +344,7 @@ class Pathname
     end
   end
   
-  # See Dir#chdir
+  # See Dir::chdir
   def chdir 
     blk = lambda { yield self } if block_given?
     Dir.chdir(self, &blk)
@@ -352,93 +352,93 @@ class Pathname
 end
 
 class Pathname
-  # See FileTest#blockdev?
+  # See FileTest::blockdev?
   def blockdev?; FileTest.blockdev?(self); end
   
-  # See FileTest#chardev?
+  # See FileTest::chardev?
   def chardev?; FileTest.chardev?(self); end
   
-  # See FileTest#directory?
+  # See FileTest::directory?
   def directory?; FileTest.directory?(self); end
   
-  # See FileTest#executable?
+  # See FileTest::executable?
   def executable?; FileTest.executable?(self); end
   
-  # See FileTest#executable_real?
+  # See FileTest::executable_real?
   def executable_real?; FileTest.executable_real?(self); end
   
-  # See FileTest#exists?
+  # See FileTest::exists?
   def exists?; FileTest.exists?(self); end
   
-  # See FileTest#file?
+  # See FileTest::file?
   def file?; FileTest.file?(self); end
   
-  # See FileTest#grpowned?
+  # See FileTest::grpowned?
   def grpowned?; FileTest.grpowned?(self); end
   
-  # See FileTest#owned?
+  # See FileTest::owned?
   def owned?; FileTest.owned?(self); end
   
-  # See FileTest#pipe?
+  # See FileTest::pipe?
   def pipe?; FileTest.pipe?(self); end
   
-  # See FileTest#readable?
+  # See FileTest::readable?
   def readable?; FileTest.readable?(self); end
   
-  # See FileTest#readable_real?
+  # See FileTest::readable_real?
   def readable_real?; FileTest.readable_real?(self); end
   
-  # See FileTest#setgid?
+  # See FileTest::setgid?
   def setgid?; FileTest.setgit?(self); end
   
-  # See FileTest#setuid?
+  # See FileTest::setuid?
   def setuid?; FileTest.setuid?(self); end
   
-  # See FileTest#socket?
+  # See FileTest::socket?
   def socket?; FileTest.socket?(self); end
   
-  # See FileTest#sticky?
+  # See FileTest::sticky?
   def sticky?; FileTest.sticky?(self); end
   
-  # See FileTest#symlink?
+  # See FileTest::symlink?
   def symlink?; FileTest.symlink?(self); end
   
-  # See FileTest#world_readable?
+  # See FileTest::world_readable?
   def world_readable?; FileTest.world_readable?(self); end
   
-  # See FileTest#world_writable?
+  # See FileTest::world_writable?
   def world_writable?; FileTest.world_writable?(self); end
   
-  # See FileTest#writable?
+  # See FileTest::writable?
   def writable?; FileTest.writable?(self); end
   
-  # See FileTest#writable_real?
+  # See FileTest::writable_real?
   def writable_real?; FileTest.writable_real?(self); end
   
-  # See FileTest#zero?
+  # See FileTest::zero?
   def zero?; FileTest.zero?(self); end
 end
 
 class Pathname
-  # See File#atime
+  # See File::atime
   def atime; File.atime(self); end
   
-  # See File#ctime
+  # See File::ctime
   def ctime; File.ctime(self); end
   
-  # See File#ftype
+  # See File::ftype
   def ftype; File.ftype(self); end
   
-  # See File#lstat
+  # See File::lstat
   def lstat; File.lstat(self); end
   
-  # See File#mtime
+  # See File::mtime
   def mtime; File.mtime(self); end
   
-  # See File#stat
+  # See File::stat
   def stat; File.stat(self); end
   
-  # See File#utime
+  # See File::utime
   def utime(atime, mtime); File.utime(self, atime, mtime); end
 end
 
@@ -446,92 +446,92 @@ class Pathname
   # See File::join
   def self.join(*parts); File.join(*parts.reject {|p| p.empty? }).to_path; end
   
-  # See File#basename
+  # See File::basename
   def basename; File.basename(self).to_path; end
   
-  # See File#chmod
+  # See File::chmod
   def chmod(mode); File.chmod(mode, self); end
   
-  # See File#chown
+  # See File::chown
   def chown(owner, group); File.chown(owner, group, self); end
   
-  # See File#dirname
+  # See File::dirname
   def dirname; File.dirname(self).to_path; end
   
-  # See File#expand_path
+  # See File::expand_path
   def expand_path(from = nil); File.expand_path(self, from).to_path; end
   
-  # See File#extname
+  # See File::extname
   def extname; File.extname(self); end
   
-  # See File#fnmatch
+  # See File::fnmatch
   def fnmatch?(pat, flags = 0); File.fnmatch(pat, self, flags); end
   
-  # See File#join
+  # See File::join
   def join(*parts); self.class.join(self, *parts); end
   
-  # See File#lchmod
+  # See File::lchmod
   def lchmod(mode); File.lchmod(mode, self); end
   
-  # See File#lchown
+  # See File::lchown
   def lchown(owner, group); File.lchown(owner, group, self); end
   
-  # See File#link
+  # See File::link
   def link(to); File.link(self, to); end
   
-  # See File#mkpath
+  # See File::mkpath
   def mkpath; File.makedirs(self); end
   
-  # See File#readlink
+  # See File::readlink
   def readlink; File.readlink(self).to_path; end
   
-  # See File#rename
+  # See File::rename
   def rename(to); File.rename(self, to); replace(to); end
   
-  # See File#size
+  # See File::size
   def size; File.size(self); end
   
-  # See File#size?
+  # See File::size?
   def size?; File.size?(self); end
   
-  # See File#split
+  # See File::split
   def split; File.split(self).map {|part| part.to_path }; end
   
-  # See File#symlink
+  # See File::symlink
   def symlink(to); File.symlink(self, to); end
   
-  # See File#truncate
+  # See File::truncate
   def truncate; File.truncate(self); end
 end
 
 class Pathname
   
-  # See FileUtils#rmtree
+  # See FileUtils::rmtree
   def rmtree; FileUtils.rmtree(self); end
   
-  # See FileUtils#touch
+  # See FileUtils::touch
   def touch; FileUtils.touch(self); end
 end
 
 class Pathname
-  # See IO#each_line
+  # See IO::each_line
   def each_line(sep = $/, &blk); IO.foreach(self, sep, &blk); end
   
-  # See IO#open
+  # See IO::open
   def open(mode = 'r', &blk); IO.open(self, mode, &blk); end
   
-  # See IO#read
+  # See IO::read
   def read(len = nil, off = 0); IO.read(self, len, off); end
   
-  # See IO#readlines
+  # See IO::readlines
   def readlines(sep = $/); IO.readlines(self, sep); end
   
-  # See IO#sysopen
+  # See IO::sysopen
   def sysopen(mode = 'r', perm = nil); IO.sysopen(self, mode, perm); end
 end
 
 class Pathname
-  # See Find#find
+  # See Find::find
   def find; Find.find(self) {|path| yield path.to_path }; end
 end
 
