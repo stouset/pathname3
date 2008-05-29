@@ -479,6 +479,9 @@ class Pathname
   # See File::link
   def link(to); File.link(self, to); end
   
+  # See File::open
+  def open(mode = 'r', perm = nil, &blk); File.open(self, mode, perm, &blk); end
+  
   # See File::readlink
   def readlink; File.readlink(self).to_path; end
   
@@ -515,9 +518,6 @@ end
 class Pathname
   # See IO::each_line
   def each_line(sep = $/, &blk); IO.foreach(self, sep, &blk); end
-  
-  # See IO::open
-  def open(mode = 'r', perm = nil, &blk); IO.open(self, mode, perm, &blk); end
   
   # See IO::read
   def read(len = nil, off = 0); IO.read(self, len, off); end
