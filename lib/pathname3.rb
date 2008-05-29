@@ -479,9 +479,6 @@ class Pathname
   # See File::link
   def link(to); File.link(self, to); end
   
-  # See File::mkpath
-  def mkpath; File.makedirs(self); end
-  
   # See File::readlink
   def readlink; File.readlink(self).to_path; end
   
@@ -505,6 +502,8 @@ class Pathname
 end
 
 class Pathname
+  # See FileUtils::mkpath
+  def mkpath; FileUtils.mkpath(self); end
   
   # See FileUtils::rmtree
   def rmtree; FileUtils.rmtree(self); end
