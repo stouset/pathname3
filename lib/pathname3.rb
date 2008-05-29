@@ -517,7 +517,7 @@ class Pathname
   def each_line(sep = $/, &blk); IO.foreach(self, sep, &blk); end
   
   # See IO::open
-  def open(mode = 'r', &blk); IO.open(self, mode, &blk); end
+  def open(mode = 'r', perm = nil, &blk); IO.open(self, mode, perm, &blk); end
   
   # See IO::read
   def read(len = nil, off = 0); IO.read(self, len, off); end
