@@ -7,7 +7,7 @@ require 'find'
 # paths than the class-level methods on File, FileTest, Dir, and Find.
 #
 class Pathname < String
-  VERSION     = '1.2.1' # version of the library
+  VERSION     = '1.2.2' # version of the library
   SYMLOOP_MAX = 8       # deepest symlink traversal
   
   ROOT    = '/'.freeze

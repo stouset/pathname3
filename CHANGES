@@ -1,5 +1,12 @@
 = pathname3 Changelog
 
+== Version 1.2.2
+
+* Fixes a bug where split didn't return Pathnames
+* Fixes a bug where empty components of a path were joined
+* Fixes bugs where methods were called on the wrong class
+* Documentation improvements
+
 == Version 1.2.1
 
 * Fix a bug where Pathname#open was accidentally redefined due to misnamed
