@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/stouset/pathname3/'
   
   s.name        = 'pathname3'
-  s.version     = Pathname::VERSION # version 1.2.0
+  s.version     = Pathname::VERSION # v1.2.3
   s.platform    = Gem::Platform::RUBY
   s.description = 'Faster replacement for pathname and pathname2'
   s.summary     = <<-DESC.strip.gsub(/\s+/, ' ')
@@ -28,4 +28,7 @@ Gem::Specification.new do |s|
   s.files += Dir['{lib,test}/**/*']
   
   s.has_rdoc     = true
+  
+  # to satisfy GitHub
+  s.rubygems_version = '1.1.1'
 end
