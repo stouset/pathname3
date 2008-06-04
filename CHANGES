@@ -1,5 +1,9 @@
 = pathname3 Changelog
 
+== Version 1.2.3
+
+* Fixes gem building on GitHub
+
 == Version 1.2.2
 
 * Fixes a bug where split didn't return Pathnames

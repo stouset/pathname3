@@ -1,12 +1,10 @@
-require 'lib/pathname3'
-
 Gem::Specification.new do |s|
   s.author   = 'Stephen Touset'
   s.email    = 'stephen@touset.org'
   s.homepage = 'http://github.com/stouset/pathname3/'
   
   s.name        = 'pathname3'
-  s.version     = Pathname::VERSION # v1.2.3
+  s.version     = '1.2.3'
   s.platform    = Gem::Platform::RUBY
   s.description = 'Faster replacement for pathname and pathname2'
   s.summary     = <<-DESC.strip.gsub(/\s+/, ' ')
@@ -25,10 +23,9 @@ Gem::Specification.new do |s|
   
   s.files  = %w{ CHANGES README LICENSE }
   s.files += %w{ pathname3.gemspec }
-  s.files += Dir['{lib,test}/**/*']
+  s.files += %w{ lib/pathname3.rb }
+  s.files += %w{ test/lib/test_pathname.rb }
+  s.files += %w{ test/lib/test_pathname3.rb }
   
-  s.has_rdoc     = true
-  
-  # to satisfy GitHub
-  s.rubygems_version = '1.1.1'
+  s.has_rdoc = true
 end
