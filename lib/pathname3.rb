@@ -306,8 +306,10 @@ class Pathname < String
   #
   def unlink
     Dir.unlink(self)
+    true
   rescue Errno::ENOTDIR
     File.unlink(self)
+    true
   end
 end
 
@@ -505,13 +507,13 @@ end
 
 class Pathname
   # See FileUtils::mkpath
-  def mkpath; FileUtils.mkpath(self); end
+  def mkpath; FileUtils.mkpath(self).to_path; end
   
   # See FileUtils::rmtree
-  def rmtree; FileUtils.rmtree(self); end
+  def rmtree; FileUtils.rmtree(self).first.to_path; end
   
   # See FileUtils::touch
-  def touch; FileUtils.touch(self); end
+  def touch; FileUtils.touch(self).first.to_path; end
 end
 
 class Pathname
@@ -535,17 +537,12 @@ end
 
 class Pathname
   class << self
-    # Alias for Pathname#pwd
     alias getwd pwd
   end
   
-  # Alias for Pathname#unlink
+  alias absolute expand_path
   alias delete   unlink
-  
-  # Alias for Pathname#exists?
   alias exist?   exists?
-  
-  # Alias for Pathname#fnmatch?
   alias fnmatch  fnmatch?
 end
 
