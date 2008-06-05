@@ -26,6 +26,25 @@ can be installed via
 
   $ sudo gem install --source http://gems.github.com/ stouset-pathname3
 
+== Usage
+
+  require 'pathname3'
+
+  p = '~/foo'.to_path # => "~/foo"
+  p.absolute?         # => false
+  p.relative?         # => true
+  p.exists?           # => false
+
+  p = p.absolute                   # => "/Users/stouset/foo"
+  p.absolute?                      # => true
+  p.relative?                      # => false
+  p.relative_path_from('/Users')   # => "stouset/foo"
+  p.relative_path_from('/Library') # => "../Users/stouset/foo"
+  p.split                          # => ["/Users/stouset", "foo"]
+  p.touch                          # => "/Users/stouset/foo"
+  p.ctime                          # => Thu Jun 05 14:00:01 -0400 2008
+  p.delete                         # => true
+  
 == Contribution
 
 The pathname3 project is hosted on GitHub.

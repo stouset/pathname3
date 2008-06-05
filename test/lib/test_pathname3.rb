@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'test/unit'
-require 'lib/pathname3'
+require 'pathname3'
 
 require 'fileutils'
 require 'tmpdir'
