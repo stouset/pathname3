@@ -1,5 +1,11 @@
 = pathname3 Changelog
 
+== Version 1.2.4
+
+* Usage examples in the README
+* Rakefile for docs/testing
+* Fixes bugs where return values were not Pathnames
+
 == Version 1.2.3
 
 * Fixes gem building on GitHub
