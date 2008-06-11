@@ -5,6 +5,7 @@
 * Usage examples in the README
 * Rakefile for docs/testing
 * Fixes bugs where return values were not Pathnames
+* Adds Pathname#glob
 
 == Version 1.2.3
 

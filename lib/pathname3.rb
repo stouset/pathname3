@@ -144,7 +144,6 @@ class Pathname < String
   #     "/path/to"
   #     "/path/to/some"
   #     "/path/to/some/file"
-
   #
   #   Pathname.new('a/relative/path').ascend {|path| p path }
   #     "a"
@@ -343,6 +342,13 @@ class Pathname
     else
       dirs
     end
+  end
+  
+  # See Dir::glob
+  def glob(pattern, flags = 0, &block)
+    patterns = [pattern].flatten
+    patterns.map! {|p| self.class.glob(self.to_s + p, flags, &block) }
+    patterns.flatten
   end
   
   # See Dir::chdir
