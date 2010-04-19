@@ -11,7 +11,7 @@ common.
 An implementation by Daniel J. Berger, pathname2, improved on the original
 significantly, adding Windows support, a Facade implementation, and a String-
 based implementation. While his version is faster, it's still very slow at
-instantiation. And it's Facade implementation misses some odd case methods
+instantiation. And its Facade implementation misses some odd case methods
 like Pathname#join.
 
 This version will focus on being fast and lightweight, while still being pure
