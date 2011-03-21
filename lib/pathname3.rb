@@ -513,7 +513,7 @@ end
 
 class Pathname
   # See FileUtils::mkpath
-  def mkpath; FileUtils.mkpath(self).to_path; end
+  def mkpath; FileUtils.mkpath(self).first.to_path; end
 
   # See FileUtils::rmtree
   def rmtree; FileUtils.rmtree(self).first.to_path; end
