@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/stouset/pathname3/'
   
   s.name        = 'pathname3'
-  s.version     = '1.2.3'
+  s.version     = '1.2.5'
   s.platform    = Gem::Platform::RUBY
   s.description = 'Faster replacement for pathname and pathname2'
   s.summary     = <<-DESC.strip.gsub(/\s+/, ' ')

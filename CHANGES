@@ -1,5 +1,9 @@
 = pathname3 Changelog
 
+== Version 1.2.5
+
+* Fixed a bug in Pathname#mkpath (closes https://github.com/stouset/pathname3/issues/1)
+
 == Version 1.2.4
 
 * Usage examples in the README
